@@ -9,3 +9,26 @@
 # TODO 4: grep i liczenie wierszy ERROR dla każdego pliku.
 # TODO 5: if wyznaczający STATUS zgodnie z ZADANIA.md.
 # TODO 6: printf trzy pola oddzielone średnikami.
+#!/usr/bin/env bash
+KATALOG="${1:-dane}"
+
+if [[ -d "$KATALOG" ]]; then
+    for plik in "$KATALOG"/*.log; do
+        [[ -e "$plik" ]] || continue
+
+         ile1=$(grep -c '^ERROR;' "$plik")
+
+         ile2=$(grep -c '^TIMEOUT;' "$plik")
+
+         if [[ "$ile2" -ge 2 ]]; then
+             status="ALARM"
+         else
+             stasus="OK"
+         fi
+
+         echo "$(basename "$plik");$ile1;$status"
+    done
+else
+    echo "Brak katalogu" >&2
+    exit 2
+fi
